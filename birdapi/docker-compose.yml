@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: birdapi-postgres
+    environment:
+      POSTGRES_DB: birddb
+      POSTGRES_USER: birduser
+      POSTGRES_PASSWORD: birdpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - birdapi-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U birduser -d birddb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Spring Boot Application
+  birdapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: birdapi-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/birddb
+      SPRING_DATASOURCE_USERNAME: birduser
+      SPRING_DATASOURCE_PASSWORD: birdpass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+    ports:
+      - "8080:8080"
+    networks:
+      - birdapi-network
+
+volumes:
+  postgres-data:
+
+networks:
+  birdapi-network:
+    driver: bridge
+
