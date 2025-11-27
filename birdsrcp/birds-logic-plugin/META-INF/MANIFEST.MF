@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Birds Logic Plugin
+Bundle-SymbolicName: birds-logic-plugin
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: com.birds.logic.model,
+ com.birds.logic.service.bird,
+ com.birds.logic.service.sighting
+Automatic-Module-Name: birds.logic.plugin
+Bundle-ClassPath: .,
+ lib/jackson-core-2.17.0.jar,
+ lib/jackson-databind-2.17.0.jar,
+ lib/jackson-annotations-2.17.0.jar
